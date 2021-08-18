@@ -1,5 +1,5 @@
-<!-- ![Go version](https://img.shields.io/github/go-mod/go-version/Icikowski/Traffic-Generator?filename=application%2Fgo.mod&style=for-the-badge)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Icikowski/Traffic-Generator?style=for-the-badge)](https://goreportcard.com/report/github.com/Icikowski/Traffic-Generator) -->
+![Go version](https://img.shields.io/github/go-mod/go-version/Icikowski/Traffic-Generator?filename=application%2Fgo.mod&style=for-the-badge)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Icikowski/Traffic-Generator?style=for-the-badge)](https://goreportcard.com/report/github.com/Icikowski/Traffic-Generator)
 ![License](https://img.shields.io/github/license/Icikowski/Traffic-Generator?style=for-the-badge)
 
 # Traffic Generator
