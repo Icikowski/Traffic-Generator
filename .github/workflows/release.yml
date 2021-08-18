@@ -20,9 +20,8 @@ jobs:
       run: make build
     - name: Upload artifacts
       uses: actions/upload-artifact@v2.2.4
-      working-directory: application/bin
       with:
-        path: "*"
+        path: "application/bin/*"
   release:
     runs-on: ubuntu-latest
     needs: [build]
@@ -35,4 +34,4 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: false
-        files: traffic-generator-*
+        files: application/bin/traffic-generator-*
