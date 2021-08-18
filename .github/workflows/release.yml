@@ -36,4 +36,4 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: false
-        files: application/bin/traffic-generator-*
+        files: artifact/traffic-generator-*
