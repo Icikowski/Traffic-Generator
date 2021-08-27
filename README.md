@@ -16,4 +16,5 @@
 | `-requests` | Number of simultaneous requests to be sent in given interval | no | positive integer | `30` |
 | `-interval` | Requests interval | no | duration | `2s` |
 | `-timeout` | Requests timeout | no | duration (≤ interval) | `1s` |
+| `-verbose` | Verbose logging console output flag | no | just the presence of the flag which equals `true` | `false` |
 | `-help`, `-h` | Shows help message with command line options' descriptions | no | none | _N/A_ |

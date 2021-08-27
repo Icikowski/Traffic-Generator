@@ -10,12 +10,12 @@ import (
 
 // Configuration represents traffic generator's parameters
 type Configuration struct {
-	TrafficName          *string
-	Target               *string
-	SuccessRatio         *uint
-	SimultaneousRequests *uint
-	RequestsInterval     *time.Duration
-	RequestsTimeout      *time.Duration
+	TrafficName          *string        `json:"name" yaml:"name"`
+	Target               *string        `json:"target" yaml:"target"`
+	SuccessRatio         *uint          `json:"success_ratio" yaml:"success_ratio"`
+	SimultaneousRequests *uint          `json:"simultaneous_requests" yaml:"simultaneous_requests"`
+	RequestsInterval     *time.Duration `json:"interval" yaml:"interval"`
+	RequestsTimeout      *time.Duration `json:"timeout" yaml:"timeout"`
 }
 
 // Validate checks configuration's correctness and fails if configuration is invalid
@@ -49,16 +49,7 @@ func (c *Configuration) Validate(log *zerolog.Logger) {
 			log.Fatal().Msg(test.message)
 		}
 	}
-	log.Info().Dict(
-		"config",
-		zerolog.Dict().
-			Str("traffic name", *c.TrafficName).
-			Str("destination", *c.Target).
-			Uint("success ratio", *c.SuccessRatio).
-			Uint("simultaneous requests", *c.SimultaneousRequests).
-			Dur("requests interval", *c.RequestsInterval).
-			Dur("requests timeout", *c.RequestsTimeout),
-	).Msg("configuration is valid")
+	log.Info().Object("configuration", *c).Msg("configuration is valid")
 }
 
 // GetLogFilename returns filename for log file
@@ -68,4 +59,17 @@ func (c *Configuration) GetLogFilename() string {
 		*c.TrafficName,
 		time.Now().Local().Format(constants.FilenameTimeFormat),
 	)
+}
+
+// Add logging capabilities
+var _ zerolog.LogObjectMarshaler = Configuration{}
+
+func (c Configuration) MarshalZerologObject(e *zerolog.Event) {
+	e.
+		Str("name", *c.TrafficName).
+		Str("target", *c.Target).
+		Uint("success_ratio", *c.SuccessRatio).
+		Uint("simultaneous_requests", *c.SimultaneousRequests).
+		Dur("interval", *c.RequestsInterval).
+		Dur("timeout", *c.RequestsTimeout)
 }

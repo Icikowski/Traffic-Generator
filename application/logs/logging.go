@@ -7,10 +7,18 @@ import (
 	"icikowski.pl/traffic-generator/constants"
 )
 
-var console = zerolog.ConsoleWriter{
-	NoColor:    false,
-	Out:        os.Stdout,
-	TimeFormat: constants.LogTimeFormat,
+var console = &filteredWriter{
+	w: zerolog.MultiLevelWriter(zerolog.ConsoleWriter{
+		NoColor:    false,
+		Out:        os.Stdout,
+		TimeFormat: constants.LogTimeFormat,
+	}),
+	l: zerolog.DebugLevel,
+}
+
+// SetConsoleWriterLevel specifies the level of logs written to the console
+func SetConsoleWriterLevel(l zerolog.Level) {
+	console.l = l
 }
 
 // Log is global logger instance for logging purposes
