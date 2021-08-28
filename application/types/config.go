@@ -64,6 +64,7 @@ func (c *Configuration) GetLogFilename() string {
 // Add logging capabilities
 var _ zerolog.LogObjectMarshaler = Configuration{}
 
+// MarshalZerologObject adds Configuration's fields to log
 func (c Configuration) MarshalZerologObject(e *zerolog.Event) {
 	e.
 		Str("name", *c.TrafficName).
