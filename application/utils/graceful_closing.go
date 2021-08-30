@@ -6,8 +6,8 @@ import (
 	"syscall"
 )
 
-// CreateShutdownHook adds support for interruption signals and pre-exit hooks
-func CreateShutdownHook(hook func()) {
+// RegisterGracefulExitHooks adds support for OS-specific interruption signals and pre-exit hooks
+func RegisterGracefulExitHooks(hook func()) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {

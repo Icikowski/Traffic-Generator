@@ -1,4 +1,4 @@
-package types
+package config
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"icikowski.pl/traffic-generator/constants"
+	"icikowski.pl/traffic-generator/logs"
 )
 
 // Configuration represents traffic generator's parameters
@@ -19,11 +20,19 @@ type Configuration struct {
 }
 
 // Validate checks configuration's correctness and fails if configuration is invalid
-func (c *Configuration) Validate(log *zerolog.Logger) {
+func (c *Configuration) Validate() {
 	validity := []struct {
 		validityCheck func(*Configuration) bool
 		message       string
 	}{
+		{
+			validityCheck: func(c *Configuration) bool {
+				return c.TrafficName != nil && c.Target != nil &&
+					c.SuccessRatio != nil && c.SimultaneousRequests != nil &&
+					c.RequestsInterval != nil && c.RequestsTimeout != nil
+			},
+			message: "configuration has missing fields",
+		},
 		{
 			validityCheck: func(c *Configuration) bool {
 				return len(*c.Target) != 0
@@ -46,10 +55,10 @@ func (c *Configuration) Validate(log *zerolog.Logger) {
 
 	for _, test := range validity {
 		if !test.validityCheck(c) {
-			log.Fatal().Msg(test.message)
+			logs.Log.Fatal().Msg(test.message)
 		}
 	}
-	log.Info().Object("configuration", *c).Msg("configuration is valid")
+	logs.Log.Info().Object("configuration", *c).Msg("configuration is valid")
 }
 
 // GetLogFilename returns filename for log file
