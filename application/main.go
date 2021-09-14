@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"flag"
 	"net/http"
 	"os"
@@ -32,6 +33,7 @@ func main() {
 		SimultaneousRequests: flag.Uint("requests", 30, "number of simultaneous requests to be sent in given interval"),
 		RequestsInterval:     flag.Duration("interval", 2*time.Second, "requests interval"),
 		RequestsTimeout:      flag.Duration("timeout", 1*time.Second, "requests timeout (must not be longer than interval)"),
+		InsecureMode:         flag.Bool("insecure", false, "insecure mode (SSL certificates of the target will not be verified)"),
 	}
 	configInput := flag.String("config", "", "configuration file (YAML or JSON) or pipeline input (\"--\")")
 	verbose := flag.Bool("verbose", false, "enable verbose console logging")
@@ -70,6 +72,11 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), *runningConfig.RequestsInterval)
 		client := http.Client{
 			Timeout: *runningConfig.RequestsTimeout,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: *runningConfig.InsecureMode,
+				},
+			},
 		}
 
 		mutex := sync.Mutex{}

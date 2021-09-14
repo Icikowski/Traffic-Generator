@@ -17,6 +17,7 @@
 | `-requests` | Number of simultaneous requests to be sent in given interval | no | positive integer | `30` |
 | `-interval` | Requests interval | no | duration | `2s` |
 | `-timeout` | Requests timeout | no | duration (≤ interval) | `1s` |
+| `-insecure` | Insecure mode (SSL certificates of the target will not be verified) | no | just the presence of the flag which equals `true` | `false` |
 | `-verbose` | Verbose logging console output flag | no | just the presence of the flag which equals `true` | `false` |
 | `-help`, `-h` | Shows help message with command line options' descriptions | no | none | _N/A_ |
 
@@ -30,8 +31,9 @@
 | `target` | Traffic target | string with URL | `"http://example.com"` |
 | `success_ratio` | Desired success ratio in percents | integer from range `1` - `100` | `90` |
 | `simultaneous_requests` | Number of simultaneous requests to be sent in given interval | positive integer | `30` |
-| `interval` | Requests interval | number of milliseconds or string representing duration | `2000`, `"2s"` |
-| `timeout` | Requests timeout | number of milliseconds or string representing duration | `1000`, `"1s"` |
+| `interval` | Requests interval | Number of milliseconds or string representing duration | `2000`, `"2s"` |
+| `timeout` | Requests timeout | Number of milliseconds or string representing duration | `1000`, `"1s"` |
+| `insecure` | Insecure mode (SSL certificates of the target will not be verified) | boolean | `false`, `true` |
 
 <details>
 <summary>Example JSON configuration file</summary>
@@ -43,7 +45,8 @@
     "success_ratio": 90,
     "simultaneous_requests": 30,
     "interval": "2s",
-    "timeout": "1s"
+    "timeout": "1s",
+    "insecure": true
 }
 ```
 </details>
@@ -58,6 +61,7 @@ success_ratio: 90
 simultaneous_requests: 30
 interval: 2s
 timeout: 1s
+insecure: true
 ```
 </details>
 
