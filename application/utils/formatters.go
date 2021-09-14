@@ -7,9 +7,8 @@ import (
 
 // FormatDuration returns human-readable representation of given time.Duration
 func FormatDuration(duration time.Duration) string {
-	duration = duration.Round(time.Second)
-	minutes := duration / time.Minute
-	duration -= minutes
-	seconds := duration / time.Second
+	rounded := duration.Round(time.Second)
+	minutes := rounded / time.Minute
+	seconds := (rounded - (minutes * time.Minute)) / time.Second
 	return fmt.Sprintf("%dm%02ds", minutes, seconds)
 }
