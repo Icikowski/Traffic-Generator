@@ -15,6 +15,9 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.17
+    - name: Get dependencies
+      working-directory: application
+      run: make get
     - name: Build application
       working-directory: application
       run: make build-all
