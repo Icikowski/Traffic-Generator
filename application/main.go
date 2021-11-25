@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"flag"
 	"net/http"
 	"os"
@@ -11,9 +12,14 @@ import (
 
 	"github.com/rs/zerolog"
 	"icikowski.pl/traffic-generator/config"
+	"icikowski.pl/traffic-generator/constants"
 	"icikowski.pl/traffic-generator/logs"
 	"icikowski.pl/traffic-generator/utils"
 )
+
+var version = constants.BuildValueUnknown
+var gitCommit = constants.BuildValueUnknown
+var binaryType = constants.BuildValueUnknown
 
 func main() {
 	cycle := 0
@@ -37,7 +43,18 @@ func main() {
 	}
 	configInput := flag.String("config", "", "configuration file (YAML or JSON) or pipeline input (\"--\")")
 	verbose := flag.Bool("verbose", false, "enable verbose console logging")
+	versionCmd := flag.Bool("version", false, "print application's version and build info")
 	flag.Parse()
+
+	if *versionCmd {
+		out, _ := json.Marshal(map[string]string{
+			"version":    version,
+			"commit":     gitCommit,
+			"binaryType": binaryType,
+		})
+		os.Stdout.Write(out)
+		return
+	}
 
 	if !*verbose {
 		logs.SetConsoleWriterLevel(zerolog.InfoLevel)
