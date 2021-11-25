@@ -17,7 +17,7 @@ jobs:
         go-version: 1.17
     - name: Build application
       working-directory: application
-      run: make build
+      run: make build-all
     - name: Upload artifacts
       uses: actions/upload-artifact@v2.2.4
       with:
