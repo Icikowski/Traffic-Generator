@@ -20,6 +20,7 @@
 | `-insecure` | Insecure mode (SSL certificates of the target will not be verified) | no | just the presence of the flag which equals `true` | `false` |
 | `-verbose` | Verbose logging console output flag | no | just the presence of the flag which equals `true` | `false` |
 | `-help`, `-h` | Shows help message with command line options' descriptions | no | none | _N/A_ |
+| `-version` | Show version information | no | none | _N/A_ |
 
 ## Configuration file fields
 
