@@ -2,7 +2,7 @@
 .SILENT: ${.PHONY}
 
 GIT_COMMIT := $(shell git rev-parse --short HEAD)
-GIT_TAG := $(shell git describe --abbrev=0 | sed "s/v//")
+GIT_TAG := $(shell echo $${CURRENT_TAG:-$$(git describe --abbrev=0 | sed "s/v//")})
 
 BASE_FLAGS := -X 'main.version=${GIT_TAG}' -X 'main.gitCommit=${GIT_COMMIT}'
 
