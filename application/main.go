@@ -14,6 +14,7 @@ import (
 	"icikowski.pl/traffic-generator/config"
 	"icikowski.pl/traffic-generator/constants"
 	"icikowski.pl/traffic-generator/logs"
+	"icikowski.pl/traffic-generator/recording"
 	"icikowski.pl/traffic-generator/utils"
 )
 
@@ -25,9 +26,14 @@ func main() {
 	cycle := 0
 	downtime := 0 * time.Second
 	totalDowntime := 0 * time.Second
+	var recorder *recording.Recorder
 
 	utils.RegisterGracefulExitHooks(func() {
 		logs.Log.Info().Msg("user requested application exit")
+		if recorder != nil {
+			recorder.Stop()
+			logs.Log.Info().Msg("recording stopped")
+		}
 		logs.Log.Info().Str("total downtime", utils.FormatDuration(totalDowntime)).Msg("prepared statistics")
 		logs.Log.Info().Msg("application finished")
 	})
@@ -35,13 +41,14 @@ func main() {
 	directConfig := &config.Configuration{
 		TrafficName:          flag.String("name", "some-traffic", "traffic name"),
 		Target:               flag.String("target", "", "traffic target"),
-		SuccessRatio:         flag.Uint("success", 90, "desired success ratio in percents [1-100]"),
+		SuccessRatio:         flag.Float64("success", 90.0, "desired success ratio in percents [1-100]"),
 		SimultaneousRequests: flag.Uint("requests", 30, "number of simultaneous requests to be sent in given interval"),
 		RequestsInterval:     flag.Duration("interval", 2*time.Second, "requests interval"),
 		RequestsTimeout:      flag.Duration("timeout", 1*time.Second, "requests timeout (must not be longer than interval)"),
 		InsecureMode:         flag.Bool("insecure", false, "insecure mode (SSL certificates of the target will not be verified)"),
+		RecordingEnabled:     flag.Bool("record", false, "enable recording of success ratio in CSV file"),
 	}
-	configInput := flag.String("config", "", "configuration file (YAML or JSON) or pipeline input (\"--\")")
+	configInput := flag.String("config", "", `configuration file (YAML or JSON) or pipeline input ("--")`)
 	verbose := flag.Bool("verbose", false, "enable verbose console logging")
 	versionCmd := flag.Bool("version", false, "print application's version and build info")
 	flag.Parse()
@@ -66,7 +73,7 @@ func main() {
 		if err != config.ErrEmptyFlag {
 			logs.Log.Fatal().Err(err).Msg("provided config is invalid")
 		}
-		logs.Log.Warn().Err(err).Msg("")
+		logs.Log.Warn().Err(err).Send()
 		runningConfig = directConfig
 	}
 
@@ -81,7 +88,22 @@ func main() {
 		logs.Log.Info().Str("filename", filename).Msg("started logging to file")
 	}
 
+	if *(runningConfig.RecordingEnabled) {
+		recordingName := runningConfig.GetRecordingFilename()
+		r, err := recording.NewRecorder(recordingName)
+		if err != nil {
+			logs.Log.Fatal().Str("filename", recordingName).Err(err).Msg("cannot write recording to file")
+		}
+		logs.Log.Info().Str("filename", recordingName).Msg("started recording statistics")
+		recorder = r
+	}
+
 	logs.Log.Info().Msg("starting analysis")
+	record := func(cycle int, successRatio float64) {
+		if recorder != nil {
+			recorder.Record(runningConfig.RequestsInterval.Seconds()*float64(cycle), successRatio)
+		}
+	}
 	for {
 		cycle += 1
 		logs.Log.Debug().Int("cycle", cycle).Msg("cycle started")
@@ -112,9 +134,10 @@ func main() {
 		<-ctx.Done()
 		cancel()
 
-		successRatio := float32(successful*100.0) / float32(*runningConfig.SimultaneousRequests)
-		if successRatio < float32(*runningConfig.SuccessRatio) {
-			logs.Log.Debug().Int("cycle", cycle).Uint("ratio requested", *runningConfig.SuccessRatio).Float32("ratio actual", successRatio).Msg("success ratio is below requested value")
+		successRatio := float64(successful*100.0) / float64(*runningConfig.SimultaneousRequests)
+		record(cycle, successRatio)
+		if successRatio < float64(*runningConfig.SuccessRatio) {
+			logs.Log.Debug().Int("cycle", cycle).Float64("ratio requested", *runningConfig.SuccessRatio).Float64("ratio actual", successRatio).Msg("success ratio is below requested value")
 			if successRatio == 0.0 {
 				if downtime == 0 {
 					logs.Log.Warn().Int("cycle", cycle).Msg("target is DOWN")
@@ -126,6 +149,6 @@ func main() {
 			logs.Log.Info().Int("cycle", cycle).Str("downtime", utils.FormatDuration(downtime)).Msg("target is UP again")
 			downtime = 0
 		}
-		logs.Log.Debug().Int("cycle", cycle).Float32("success ratio", successRatio).Msg("cycle finished")
+		logs.Log.Debug().Int("cycle", cycle).Float64("success ratio", successRatio).Msg("cycle finished")
 	}
 }

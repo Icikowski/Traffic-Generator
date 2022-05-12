@@ -13,11 +13,12 @@ import (
 type Configuration struct {
 	TrafficName          *string        `json:"name" yaml:"name"`
 	Target               *string        `json:"target" yaml:"target"`
-	SuccessRatio         *uint          `json:"success_ratio" yaml:"success_ratio"`
+	SuccessRatio         *float64       `json:"success_ratio" yaml:"success_ratio"`
 	SimultaneousRequests *uint          `json:"simultaneous_requests" yaml:"simultaneous_requests"`
 	RequestsInterval     *time.Duration `json:"interval" yaml:"interval"`
 	RequestsTimeout      *time.Duration `json:"timeout" yaml:"timeout"`
 	InsecureMode         *bool          `json:"insecure" yaml:"insecure"`
+	RecordingEnabled     *bool          `json:"record" yaml:"record"`
 }
 
 // Validate checks configuration's correctness and fails if configuration is invalid
@@ -71,6 +72,15 @@ func (c *Configuration) GetLogFilename() string {
 	)
 }
 
+// GetRecordingFilename returns filename for recording file
+func (c *Configuration) GetRecordingFilename() string {
+	return fmt.Sprintf(
+		"%s (%s).csv",
+		*c.TrafficName,
+		time.Now().Local().Format(constants.FilenameTimeFormat),
+	)
+}
+
 // Add logging capabilities
 var _ zerolog.LogObjectMarshaler = Configuration{}
 
@@ -79,7 +89,7 @@ func (c Configuration) MarshalZerologObject(e *zerolog.Event) {
 	e.
 		Str("name", *c.TrafficName).
 		Str("target", *c.Target).
-		Uint("success_ratio", *c.SuccessRatio).
+		Float64("success_ratio", *c.SuccessRatio).
 		Uint("simultaneous_requests", *c.SimultaneousRequests).
 		Dur("interval", *c.RequestsInterval).
 		Dur("timeout", *c.RequestsTimeout).
