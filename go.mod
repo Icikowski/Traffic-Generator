@@ -1,4 +1,4 @@
-module icikowski.pl/traffic-generator
+module git.sr.ht/~icikowski/traffic-generator
 
 go 1.19
 

@@ -1,10 +1,11 @@
-![Go version](https://img.shields.io/github/go-mod/go-version/Icikowski/Traffic-Generator?filename=application%2Fgo.mod&style=for-the-badge)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Icikowski/Traffic-Generator?style=for-the-badge)](https://goreportcard.com/report/github.com/Icikowski/Traffic-Generator)
-![License](https://img.shields.io/github/license/Icikowski/Traffic-Generator?style=for-the-badge)
-
 # Traffic Generator
 
 **Traffic Generator** is a simple tool that allows user to put traffic with specified properties on given target.
+
+> **⚠️ Warning**
+>
+> This repository is hosted on _git.sr.ht_ and mirrored to GitHub.
+> You should always refer to _git.sr.ht_ version as the primary instance.
 
 ## Command line options
 

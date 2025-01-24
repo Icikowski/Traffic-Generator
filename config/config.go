@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"git.sr.ht/~icikowski/traffic-generator/constants"
+	"git.sr.ht/~icikowski/traffic-generator/logs"
 	"github.com/rs/zerolog"
-	"icikowski.pl/traffic-generator/constants"
-	"icikowski.pl/traffic-generator/logs"
 )
 
 // Configuration represents traffic generator's parameters

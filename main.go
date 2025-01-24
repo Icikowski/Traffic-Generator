@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
+	"git.sr.ht/~icikowski/traffic-generator/config"
+	"git.sr.ht/~icikowski/traffic-generator/constants"
+	"git.sr.ht/~icikowski/traffic-generator/logs"
+	"git.sr.ht/~icikowski/traffic-generator/recording"
+	"git.sr.ht/~icikowski/traffic-generator/utils"
 	"github.com/rs/zerolog"
-	"icikowski.pl/traffic-generator/config"
-	"icikowski.pl/traffic-generator/constants"
-	"icikowski.pl/traffic-generator/logs"
-	"icikowski.pl/traffic-generator/recording"
-	"icikowski.pl/traffic-generator/utils"
 )
 
 var version = constants.BuildValueUnknown

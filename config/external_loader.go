@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"git.sr.ht/~icikowski/traffic-generator/logs"
 	"gopkg.in/yaml.v3"
-	"icikowski.pl/traffic-generator/logs"
 )
 
 var (

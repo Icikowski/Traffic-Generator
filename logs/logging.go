@@ -3,8 +3,8 @@ package logs
 import (
 	"os"
 
+	"git.sr.ht/~icikowski/traffic-generator/constants"
 	"github.com/rs/zerolog"
-	"icikowski.pl/traffic-generator/constants"
 )
 
 var console = &filteredWriter{
